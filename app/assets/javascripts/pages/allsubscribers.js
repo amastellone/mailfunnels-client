@@ -136,9 +136,6 @@ function viewSubscriberInfo(id) {
     var subscriber_view_last_name = $('#view_subscriber_last_name');
     var subscriber_view_email = $('#view_subscriber_email');
     var subscriber_view_revenue = $('#view_subscriber_revenue');
-    var template_name = $('#templateName');
-    var emails_clicked = $('#emailsClicked');
-    var emails_opened = $('#emailsOpened');
 
     $.ajax({
         type:'POST',
@@ -160,23 +157,29 @@ function viewSubscriberInfo(id) {
             subscriber_view_last_name.html(response.last_name);
             subscriber_view_email.html(response.email);
             subscriber_view_revenue.html("$" + response.revenue);
-
-
-            $.each(response.emails, function(email) {
-                    var html = "<tr>";
-                    html = html + "<td>" + email.name + "</td>";
-                    //emails_clicked.html(response.clicked);
-                    //emails_opened.html(response.opened);
-                    html = html + "</tr>";
-                    $('#sub_table_body').append(html);
-
-            });
-
-            for(i = 0; i < response.total_emails; i++) {
-
-            }
-
             console.log(response);
+
+            var obj = JSON.parse(response.emails);
+
+            for(var i = 0; i < response.total_emails; i++) {
+                var html = "<tr>";
+                html = html + "<td>" + obj[i].name + "</td>";
+
+                if( obj[i].clicked === 1 ){
+                    html = html + "<td>" + "Yes" + "</td>";
+                } else {
+                    html = html + "<td>" + "No" + "</td>";
+                }
+
+                if( obj[i].opened === 1 ){
+                    html = html + "<td>" + "Yes" + "</td>";
+                } else {
+                    html = html + "<td>" + "No" + "</td>";
+                }
+
+                html = html + "</tr>";
+                $('#sub_table_body').append(html);
+            }
         }
 
     });

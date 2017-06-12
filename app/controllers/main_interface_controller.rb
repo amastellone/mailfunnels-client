@@ -375,18 +375,18 @@ class MainInterfaceController < ShopifyApp::AuthenticatedController
   # last_name: Last name of the subscriber
   # email: Email of the subscriber
   # revenue: Revenue from the subscriber
-  #
+  # emails: Array of emails sent to subscriber
 
   def ajax_load_subscriber_info
 
     # Get the Subscriber from list
     subscriber = Subscriber.find(params[:subscriber_id])
-    subscriber_emails = EmailJob.where(subscriber_id: params[:subscriber_id])
+    subscriber_emails = EmailJob.where(subscriber_id: params[:subscriber_id], sent: 1)
 
 
 
-    email_array = Hash.new
-    index = 0
+
+    temp = Array.new
 
     subscriber_emails.each do |se|
       email = {
@@ -396,10 +396,10 @@ class MainInterfaceController < ShopifyApp::AuthenticatedController
           :opened => se.opened,
       }
 
-      email_array[index] = email
-      index = index + 1
+      temp.push(email)
 
     end
+
 
     data = {
 
@@ -409,9 +409,11 @@ class MainInterfaceController < ShopifyApp::AuthenticatedController
         :email => subscriber.email,
         :revenue => subscriber.revenue,
         :total_emails => subscriber_emails.size,
-        :emails => email_array
+        :emails => temp.to_json
 
     }
+
+
 
     # Return data as JSON
     render json: data
