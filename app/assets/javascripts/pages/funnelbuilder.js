@@ -6,39 +6,53 @@
  * @Version 1.0
  */
 
+
+var funnel_id;
+var app_id;
+var csrf_token;
+var new_node_label;
+var new_node_email_template_select;
+var new_node_delay_time_input;
+var time_unit_select;
+var funnel_builder;
+var submit_new_node_button;
+var edit_template_button;
+var create_new_node_modal;
+
+
 $(function() {
 
     /* --- AUTHENTICATION --- */
-    var csrf_token = $('meta[name=csrf-token]').attr('content');
+    csrf_token = $('meta[name=csrf-token]').attr('content');
 
     /* --- APP VALUES --- */
-    var app_id = $('#current_app_id').val();
-    var funnel_id = $('#current_funnel_id').val();
+    app_id = $('#current_app_id').val();
+    funnel_id = $('#current_funnel_id').val();
 
     /* --- FUNNEL BUILDER COMPONENTS --- */
-    var funnel_builder = $('#funnel_builder');
+    funnel_builder = $('#funnel_builder');
 
     /* --- BUTTONS --- */
     var new_node_button = $('#create_button'); //Create New Job Button
     var delete_selected_button = $('#delete_selected_button'); //Campaign Job Delete Button
     var view_selected_node_button = $('#view_selected_button'); //Campaign Job Edit Button
-    var submit_new_node_button = $('#new_node_submit_button'); //Add Node Form Submit Button
+    submit_new_node_button = $('#new_node_submit_button'); //Add Node Form Submit Button
     var preview_email_button = $('#preview_email_button'); //Preview Email Button
 
     var edit_node_button = $('#edit_selected_button'); // Edit Node Button
     var save_edit_node_button = $('#edit_node_submit_button'); // Saved Edited Node Button
 
     var view_template_button = $('#viewButton'); // View Template from node
-    var edit_template_button = $('#editButton'); // Edit Template from node
+    edit_template_button = $('#editButton'); // Edit Template from node
 
     /* --- FORM INPUTS --- */
-    var new_node_label = $('#new_node_label_input');
-    var new_node_email_template_select = $('#new_node_email_template_select');
-    var new_node_delay_time_input = $('#new_node_delay_time_input');
-    var time_unit_select = $('#time_unit_select');
+    new_node_label = $('#new_node_label_input');
+    new_node_email_template_select = $('#new_node_email_template_select');
+    new_node_delay_time_input = $('#new_node_delay_time_input');
+    time_unit_select = $('#time_unit_select');
 
     /* --- MODALS --- */
-    var create_new_node_modal = $('#modal_node_create'); //New Job Modal
+    create_new_node_modal = $('#modal_node_create'); //New Job Modal
     var view_node_modal = $('#view_node_modal'); //View Node Info Modal
     var view_template_modal = $('#view_template_modal'); //Preview Email Modal
     var edit_node_modal = $('#modal_node_edit');
@@ -85,59 +99,19 @@ $(function() {
 
     });
 
-    submit_new_node_button.click(function() {
+    // On Create new template value select
+    new_node_email_template_select.on('change', function() {
 
-        var label = new_node_label.val();
-        var email_template_id = new_node_email_template_select.val();
-        var delay_time = new_node_delay_time_input.val();
-        var delay_unit = time_unit_select.val();
-
-        $.ajax({
-            type:'POST',
-            url: '/ajax_add_new_node',
-            dataType: "json",
-            data: {
-                app_id: app_id,
-                funnel_id: funnel_id,
-                email_template_id: email_template_id,
-                delay_time: delay_time,
-                delay_unit: delay_unit,
-                name: label,
-                authenticity_token: csrf_token
-            },
-            error: function(e) {
-                console.log(e);
-            },
-            success: function(response) {
-                console.log(response);
-                var operatorId = response.id;
-                var operatorData = {
-                    top: 60,
-                    left: 500,
-                    properties: {
-                        title: label,
-                        class: 'flowchart-operator-email-node',
-                        inputs: {
-                            input_1: {
-                                label: ' ',
-                            }
-                        },
-                        outputs: {
-                            output_1: {
-                                label: ' ',
-                            }
-                        }
-                    }
-                };
-                funnel_builder.flowchart('createOperator', operatorId, operatorData);
-            }
-        });
+        if(new_node_email_template_select.val() === '0'){
+            submit_new_node_button.html('Create A New Template...');
+        } else {
+            submit_new_node_button.html('Submit');
+        }
 
 
-
-        edit_template_button.attr('href', 'edit_email_template/' + email_template_id);
-        create_new_node_modal.modal('toggle');
     });
+
+
 
     delete_selected_button.click(function() {
 
@@ -281,6 +255,7 @@ $(function() {
         var email_template_id = edit_node_time_unit_select.val();
         var delay_time = edit_node_delay_time_input.val();
         var time_unit = edit_node_time_unit_select.val();
+
 
 
         $.ajax({
@@ -492,9 +467,74 @@ $(function() {
     }
 
 
-
-
 });
+
+function saveNewNode() {
+
+    var label = new_node_label.val();
+    var email_template_id = new_node_email_template_select.val();
+    var delay_time = new_node_delay_time_input.val();
+    var delay_unit = time_unit_select.val();
+
+    if(email_template_id === '0'){
+        email_template_id = null;
+    } else{
+        email_template_id = email_template_id;
+    }
+
+
+    $.ajax({
+        type:'POST',
+        url: '/ajax_add_new_node',
+        dataType: "json",
+        data: {
+            app_id: app_id,
+            funnel_id: funnel_id,
+            email_template_id: email_template_id,
+            delay_time: delay_time,
+            delay_unit: delay_unit,
+            name: label,
+            authenticity_token: csrf_token
+        },
+        error: function(e) {
+            console.log(e);
+        },
+        success: function(response) {
+            console.log(response);
+            var operatorId = response.id;
+            var operatorData = {
+                top: 60,
+                left: 500,
+                properties: {
+                    title: label,
+                    class: 'flowchart-operator-email-node',
+                    inputs: {
+                        input_1: {
+                            label: ' ',
+                        }
+                    },
+                    outputs: {
+                        output_1: {
+                            label: ' ',
+                        }
+                    }
+                }
+            };
+            funnel_builder.flowchart('createOperator', operatorId, operatorData);
+        }
+
+    });
+
+
+    edit_template_button.attr('href', 'edit_email_template/' + email_template_id);
+    create_new_node_modal.modal('toggle');
+    if(email_template_id == null){
+        window.location.replace('funnels/new_email_template.html.erb');
+    }
+}
+
+
+
 
 
 

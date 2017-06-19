@@ -41,6 +41,15 @@ class FunnelsController < ShopifyApp::AuthenticatedController
 
   end
 
+  def new_email_template
+
+    # Get the Current App ID
+    @app = MailfunnelsUtil.get_app
+
+
+
+  end
+
   # USED WITH AJAX
   # Creates a new Funnel Model
   #

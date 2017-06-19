@@ -77,6 +77,26 @@ class EmailController < ShopifyApp::AuthenticatedController
 
   end
 
+  # Page Render Function
+  # --------------------
+  # Renders the new template page
+  #
+  #
+  # Parameters
+  # ----------
+  # node_id : ID of the node the EmailTemplate is being created for
+  #
+
+  # def new_email_template
+  #
+  #   # Get the Current App
+  #   @app = MailfunnelsUtil.get_app
+  #
+  #   # Get the node template is being created for
+  #
+  #
+  #
+  # end
 
   # USED WITH AJAX
   # Creates a new EmailTemplate Instance
