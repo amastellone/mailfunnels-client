@@ -26,6 +26,8 @@ coverage/
 .env
 *.iml
 
+dump.rdb
+
 config/database.yml
 */*/database.yml
 */database.yml
