@@ -107,9 +107,14 @@
                   <li role="presentation" class="">
                     <a href="#tab_password" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Change Password</a>
                   </li>
+                  <li role="presentation" class="">
+                    <a href="#tab_cancel" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Cancel Subscription</a>
+                  </li>
 
                 </ul>
+
                 <div id="myTabContent" class="tab-content">
+
                   <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
                     <div class="col-xs-10">
                       <form class="form-horizontal form-label-left">
@@ -157,6 +162,7 @@
                     </div>
 
                   </div>
+
                   <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
                     <div class="col-xs-10">
                       <form class="form-horizontal form-label-left">
@@ -329,7 +335,6 @@
                     </div>
                   </div>
 
-                  <!-- START CHANGE PASSWORD TAB -->
                   <div role="tabpanel" class="tab-pane fade" id="tab_password" aria-labelledby="password-tab">
                     <div class="col-xs-10">
                       <form class="form-horizontal form-label-left">
@@ -354,15 +359,33 @@
 
                         </fieldset>
                         <br>
-
                         <div class="row">
                           <button id="mf_change_password_submit" type="button" class="btn btn-success btn-border pull-right">Change Password</button>
                         </div>
-
                       </form>
                     </div>
                   </div>
-                  <!-- END CHANGE PASSWORD TAB -->
+
+                  <div role="tabpanel" class="tab-pane fade" id="tab_cancel" aria-labelledby="cancel-tab">
+                    <div class="col-xs-10">
+                      <form class="form-horizontal form-label-left">
+                        <fieldset>
+                          <legend>
+                            Cancel Subscription
+                          </legend>
+                          <div class="item form-group">
+                            <div class="row">
+                              <div class="col-xs-12 text-center">
+                                <h3>Click below to cancel your subscription</h3>
+                                <br>
+                                <button id="mf_cancel_subscription_submit" type="button" class="btn btn-danger btn-border">Cancel Subscription</button>
+                              </div>
+                            </div>
+                          </div>
+                        </fieldset>
+                      </form>
+                    </div>
+                  </div>
 
                 </div>
               </div>

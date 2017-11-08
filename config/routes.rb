@@ -23,6 +23,7 @@ Rails.application.routes.draw do
 
   # User Routes
   post '/ajax_change_password' => 'main_interface#ajax_change_password'
+  post '/ajax_cancel_subscription' => 'main_interface#ajax_cancel_subscription'
   post '/mf_api_get_user_info' => 'users#mf_api_get_user_info'
   post '/mf_api_manually_add_user' => 'users#mf_api_manually_add_user'
 

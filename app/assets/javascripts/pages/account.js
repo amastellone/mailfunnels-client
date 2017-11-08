@@ -26,6 +26,7 @@ $(function(){
     var change_password_submit = $('#mf_change_password_submit');
     var upgrade_plan_button = $('.upgrade_plan_button');
     var upgrade_plan_submit_button = $('#upgrade_plan_submit_button');
+    var cancel_subscription_button = $('#mf_cancel_subscription_submit');
 
 
 
@@ -126,6 +127,32 @@ $(function(){
                 last_name: last_name,
                 email: email,
                 confirm_email: confirm_email,
+                authenticity_token: csrf_token
+            },
+            error: function(e) {
+                console.log(e);
+                window.location.reload(true);
+
+
+            },
+            success: function(response) {
+                console.log(response);
+                window.location.reload(true);
+
+            }
+
+        });
+
+    });
+
+    cancel_subscription_button.on('click', function(e) {
+
+        $.ajax({
+            type:'POST',
+            url: '/ajax_cancel_subscription',
+            dataType: "json",
+            data: {
+
                 authenticity_token: csrf_token
             },
             error: function(e) {

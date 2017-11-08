@@ -46,6 +46,7 @@ class UsersController < ActionController::Base
     # Look for
     current_users = User.where(email: params[:email])
 
+
     unless current_users.empty?
       response = {
           success: false,
@@ -60,6 +61,9 @@ class UsersController < ActionController::Base
     secure_password = Digest::SHA1.hexdigest(seed)[0,8]
 
     user = User.new
+
+    puts params[:email]
+
 
     user.clientid = params[:client_id]
     user.email = params[:email]
@@ -96,74 +100,98 @@ class UsersController < ActionController::Base
   # mf_auth_password: Password of the user
   #
   def ajax_mf_user_auth
+    puts "======================="
+    puts "users_controller :: ajax_mf_user_auth"
 
-    # Get User Information from Infusionsoft
+    # Get User Information from Infusionsoft - returns array of contacts
     contact = Infusionsoft.contact_find_by_email(params[:mf_auth_username], [:ID, :Password])
-    puts "found contact"
-    puts "1"
-
-    if contact.first['Password'] === params[:mf_auth_password]
-      puts "----------1----------"
-
-      user = User.where(clientid: contact.first['ID']).first
-      puts "------------2------------"
-
-      unless user
-        # Return Error Response
-        response = {
-            success: false,
-            message: 'Authentication Failed'
-        }
-
-        render json: response
-        puts "-----------3-----------"
-      end
-
-      # Look for App for the User
-      app = App.where(user_id: user.id).first
-      puts "----------4------------"
-
-      logger.info app
-      puts "------------5------------"
 
 
-      if app
-
-        # Return Json Response with shopify domain
-        response = {
-            success: true,
-            type: 2,
-            url: app.name,
-            message: 'Authentication Passed'
-        }
-
-        render json: response
-
-      else
-
-        response = {
-            success: true,
-            type: 1,
-            user_id: user.id,
-            url: 'none',
-            message: 'User has not configured Shopify Domain yet.'
-        }
-        render json: response
-      end
-
-
-
-    else
-      puts "final else"
-      # Return Error Response
+    # check if we successfully retrieved the contact from infusionsoft
+    if contact.first.nil?
+      puts "ERROR - contact with username: #{params[:mf_auth_username]} was not able to be retrieved from infusionsoft"
       response = {
           success: false,
           message: 'Authentication Failed'
       }
-
+      puts "---- Response Sent (FAILURE) ----"
+      puts "======================="
       render json: response
-
+    else
+      puts "INFO - contact with username: #{params[:mf_auth_username]} was able to be retrieved from infusionsoft"
     end
+
+
+    #get first contact from array (should only be one)
+    contact = contact.first
+
+
+    #check if password matches
+    if contact['Password'] === params[:mf_auth_password]
+      puts "INFO - contact's password matches the one stored in Infusionsoft's DB"
+    else
+      puts "ERROR - contact's password does not match the password in Infusionsoft's DB"
+      response = {
+          success: false,
+          message: 'Authentication Failed'
+      }
+      puts "---- Response Sent (FAILURE) ----"
+      puts "======================="
+      render json: response
+    end
+
+
+    #get user from our DB using infusionsoft ID param
+    user = User.where(clientid: contact['ID']).first
+
+
+    #check if we successfully found the user
+    if user.nil?
+      puts "ERROR - user not found with clientid = #{contact['ID']}"
+      response = {
+          success: false,
+          message: 'Authentication Failed'
+      }
+      puts "---- Response Sent (FAILURE) ----"
+      puts "======================="
+      render json: response
+    else
+      puts "INFO - user with id = #{user.id} found with clientid = #{contact['ID']}"
+    end
+
+
+    #get app from our db using user_id param
+    app = App.where(user_id: user.id).first
+
+
+    #check if we successfully found the app associated with the user
+    if app.nil?
+      puts "WARN - app with user_id = #{user.id} not found"
+      response = {
+          success: true,
+          type: 1,
+          user_id: user.id,
+          url: 'none',
+          message: 'User has not configured Shopify Domain yet.'
+      }
+      puts "---- Response Sent (SUCCESS) ----"
+      puts "======================="
+      render json: response
+    else
+      puts "INFO - app with id = #{app.id} found with user_id = #{user.id}"
+      # Return Json Response with shopify domain
+      response = {
+          success: true,
+          type: 2,
+          url: app.name,
+          message: 'Authentication Passed'
+      }
+      puts "---- Response Sent (SUCCESS) ----"
+      puts "======================="
+      render json: response
+    end
+
+
   end
 
 

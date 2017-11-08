@@ -94,7 +94,6 @@ class MainInterfaceController < ShopifyApp::AuthenticatedController
     @subscribers = Subscriber.where(app_id: @app.id)
 
 
-
     @user_plan = MailFunnelsUser.get_user_plan(@app.user.clientid)
 
 
@@ -132,10 +131,7 @@ class MainInterfaceController < ShopifyApp::AuthenticatedController
     @num_broadcasts = BroadcastList.where(email_list_id: params[:list_id]).size
 
 
-
     @user_plan = MailFunnelsUser.get_user_plan(@app.user.clientid)
-
-
 
 
   end
@@ -699,11 +695,11 @@ class MainInterfaceController < ShopifyApp::AuthenticatedController
     puts "4"
 
 
-    plan_id  = MailFunnelsUser.get_user_plan(user.clientid)
+    plan_id = MailFunnelsUser.get_user_plan(user.clientid)
 
     products = Infusionsoft.data_query('SubscriptionPlan', 100, 0, {}, [:Id, :PlanPrice])
 
-    product = products.select { |product| product['Id'] == params[:subscription_id].to_i }[0]
+    product = products.select {|product| product['Id'] == params[:subscription_id].to_i}[0]
 
 
     unless product
@@ -727,8 +723,6 @@ class MainInterfaceController < ShopifyApp::AuthenticatedController
     end
 
 
-
-
     invoice = Infusionsoft.invoice_add_subscription(user.clientid,
                                                     false,
                                                     params[:subscription_id],
@@ -740,11 +734,6 @@ class MainInterfaceController < ShopifyApp::AuthenticatedController
                                                     0,
                                                     0
     )
-
-
-
-
-
 
 
     tag = -1
@@ -877,9 +866,6 @@ class MainInterfaceController < ShopifyApp::AuthenticatedController
         end
 
 
-
-
-
         redirect_to :controller => 'email', :action => 'lists'
       else
         puts "=========FAILED======="
@@ -982,7 +968,6 @@ class MainInterfaceController < ShopifyApp::AuthenticatedController
   def ajax_delete_email_list
 
 
-
     # Get the list from the database
     list = EmailList.find(params[:list_id])
 
@@ -1003,6 +988,172 @@ class MainInterfaceController < ShopifyApp::AuthenticatedController
         :active => 1
     })
 
+
+  end
+
+  # ajax_cancel_subscription
+  # --------------------------------------------
+  # Cancels the subscription by setting the last_bill_date to today in the infusionsoft database
+  #
+  # Takes no params
+
+  def ajax_cancel_subscription
+    puts "============= Starting ajax cancel ================"
+    # retrieve the subscription from infusionsoft
+    recurring_order = Infusionsoft.data_query('RecurringOrder', 100, 0, {:ContactId=>287}, [:Id, :EndDate, :ContactId]).first
+
+    puts recurring_order['EndDate'].to_date
+
+
+    # # check if we found the recurring order in infusionsoft's db
+    # if recurring_order.nil?
+    #   puts "ERROR - unable to retieve the recurring order with ContactId = 287"
+    #   puts "---- Returning (FAILURE) ----"
+    #   puts "======================="
+    #   # Return Failure Response
+    #   response = {
+    #       success: false,
+    #       message: 'Failed to retrieve recurring order from infusionsoft database'
+    #   }
+    #   render json: response and return
+    # else
+    #   puts "INFO - successfully retrieved recurring order with with id = #{recurring_order[Id]}"
+    # end
+
+    # puts "INFO - updating infusionsoft database to cancel the subscription, current EndDate = '#{recurring_order['EndDate']}'"
+    #
+    # # update the last bill date on the subscription to today
+    # row_id = Infusionsoft.data_update('RecurringOrder',recurring_order['Id'], {:EndDate => Time.now.to_s(:db)})
+    #
+    # puts "========="
+    # puts "row_id = #{row_id}"
+    # puts "========="
+    #
+    # recurring_order = Infusionsoft.data_query('RecurringOrder', 100, 0, {:ContactId=>287}, [:Id, :EndDate,:ContactId]).first
+    #
+    # puts "INFO - querying again. EndDate = '#{recurring_order['EndDate']}'"
+    #
+    # puts "DONEDONEDEONDONEDONE"
+    return
+
+
+
+
+    # check if we successfully canceled the subscription
+    if row_id != recurring_order[:Id]
+      puts "ERROR - there was an error updating the RecurringOrder table in infusionsoft"
+      puts "---- Returning (FAILURE) ----"
+      puts "======================="
+      # Return Failure Response
+      response = {
+          success: false,
+          message: 'Failed to update RecurringOrder in infusionsoft database'
+      }
+      render json: response and return
+    else
+      puts "INFO - successfully updated the Recurring order table in infusionsoft"
+      puts "---- Returning (SUCCESS) ----"
+      puts "======================="
+      # Return Success Response
+      response = {
+          success: true,
+          message: 'Successfully canceled subscription'
+      }
+      render json: response and return
+    end
+
+
+
+
+
+
+
+    # puts "======================="
+    # puts "main_interface_controller :: ajax_cancel_subscription"
+    #
+    # # get the app of the user who made the request
+    # current_app = MailfunnelsUtil.get_app
+    #
+    # # check if we successfully retrieved the app from the db
+    # if current_app.nil?
+    #   puts "ERROR - unable to retieve the app of the current user"
+    #   puts "---- Returning  (FAILURE) ----"
+    #   puts "======================="
+    #   # Return Failure Response
+    #   response = {
+    #       success: false,
+    #       message: 'Failed to retrieve current application from database'
+    #   }
+    #   render json: response and return
+    # else
+    #   puts "INFO - successfully retrieved application with id = #{current_app.id}"
+    # end
+    #
+    # # get the user associated with the app
+    # user = User.find(current_app.user_id)
+    #
+    # # check if we successfully retrieved the user from the db
+    # if user.nil?
+    #   puts "ERROR - unable to retieve the user with app_id = #{current_app.id}"
+    #   puts "---- Returning  (FAILURE) ----"
+    #   puts "======================="
+    #   # Return Failure Response
+    #   response = {
+    #       success: false,
+    #       message: 'Failed to retrieve current user from database'
+    #   }
+    #   render json: response and return
+    # else
+    #   puts "INFO - successfully retrieved user with id = #{user.id}"
+    # end
+    #
+    # puts "INFO - querying infusionsoft with client_id = #{user.clientid}"
+    #
+    # # retrieve the subscription from infusionsoft
+    # recurring_order = Infusionsoft.data_query('RecurringOrder', 100, 0, {:ContactId=>user.clientid}, [:Id, :EndDate]).first
+    #
+    # # check if we found the recurring order in infusionsoft's db
+    # if recurring_order.nil?
+    #   puts "ERROR - unable to retieve the recurring order with ContactId = #{user.clientid}"
+    #   puts "---- Returning (FAILURE) ----"
+    #   puts "======================="
+    #   # Return Failure Response
+    #   response = {
+    #       success: false,
+    #       message: 'Failed to retrieve recurring order from infusionsoft database'
+    #   }
+    #   render json: response and return
+    # else
+    #   puts "INFO - successfully retrieved recurring order with with id = #{recurring_order[:Id]}"
+    # end
+    #
+    # puts "INFO - updating infusionsoft database to cancel the subscription, current EndDate = '#{recurring_order[:EndDate]}'"
+    #
+    # # update the last bill date on the subscription to today
+    # row_id = Infusionsoft.data_update('RecurringOrder',recurring_order[:Id], {:EndDate => Time.now.to_s(:db)})
+    #
+    # # check if we successfully canceled the subscription
+    # if row_id != recurring_order[:Id]
+    #   puts "ERROR - there was an error updating the RecurringOrder table in infusionsoft"
+    #   puts "---- Returning (FAILURE) ----"
+    #   puts "======================="
+    #   # Return Failure Response
+    #   response = {
+    #       success: false,
+    #       message: 'Failed to update RecurringOrder in infusionsoft database'
+    #   }
+    #   render json: response and return
+    # else
+    #   puts "INFO - successfully updated the Recurring order table in infusionsoft"
+    #   puts "---- Returning (SUCCESS) ----"
+    #   puts "======================="
+    #   # Return Success Response
+    #   response = {
+    #       success: true,
+    #       message: 'Successfully canceled subscription'
+    #   }
+    #   render json: response and return
+    # end
 
   end
 
