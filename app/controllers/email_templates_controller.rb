@@ -47,6 +47,6 @@ class EmailTemplatesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def email_template_params
-      params.require(:email_template).permit(:name, :description, :email_subject, :email_content, :email_title, :has_button, :button_text, :button_url, :color, :app_id)
+      params.require(:email_template).permit(:name, :description, :email_subject, :email_content, :email_title, :has_button, :button_text, :button_url, :color, :app_id, :mf_power_foot, :show_address)
     end
 end
