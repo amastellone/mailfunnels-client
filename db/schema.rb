@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170916021748) do
+ActiveRecord::Schema.define(version: 20171109202902) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,6 +58,8 @@ ActiveRecord::Schema.define(version: 20170916021748) do
     t.datetime "updated_at",       :null=>false
     t.string   "color"
     t.integer  "has_checkout_url"
+    t.integer  "mf_power_foot"
+    t.integer  "show_address"
   end
 
   create_table "batch_email_jobs", force: :cascade do |t|
