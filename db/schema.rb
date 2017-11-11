@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171111171826) do
+ActiveRecord::Schema.define(version: 20171111201806) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,11 @@ ActiveRecord::Schema.define(version: 20171111171826) do
     t.integer  "postmark_signature_id"
     t.integer  "user_id",               :foreign_key=>{:references=>"users", :name=>"fk_apps_user_id", :on_update=>:no_action, :on_delete=>:no_action}, :index=>{:name=>"fk__apps_user_id", :using=>:btree}
     t.integer  "show_mf_powered"
+    t.integer  "foot_use_bill_add",     :default=>1
+    t.string   "foot_street"
+    t.string   "foot_city"
+    t.string   "foot_state"
+    t.string   "foot_zip"
   end
 
   create_table "email_templates", force: :cascade do |t|
@@ -50,17 +55,21 @@ ActiveRecord::Schema.define(version: 20171111171826) do
     t.text     "description"
     t.string   "email_subject"
     t.text     "email_content"
-    t.integer  "app_id",           :foreign_key=>{:references=>"apps", :name=>"fk_email_templates_app_id", :on_update=>:no_action, :on_delete=>:no_action}, :index=>{:name=>"fk__email_templates_app_id", :using=>:btree}
+    t.integer  "app_id",                 :foreign_key=>{:references=>"apps", :name=>"fk_email_templates_app_id", :on_update=>:no_action, :on_delete=>:no_action}, :index=>{:name=>"fk__email_templates_app_id", :using=>:btree}
     t.boolean  "has_button"
     t.string   "button_text"
     t.string   "button_url"
     t.string   "email_title"
-    t.datetime "created_at",       :null=>false
-    t.datetime "updated_at",       :null=>false
+    t.datetime "created_at",             :null=>false
+    t.datetime "updated_at",             :null=>false
     t.string   "color"
     t.integer  "has_checkout_url"
     t.integer  "mf_power_foot"
     t.integer  "show_address"
+    t.integer  "greet_use_default",      :default=>1
+    t.integer  "greet_before_cust_name", :default=>0
+    t.integer  "greet_after_cust_name",  :default=>0
+    t.string   "greet_content"
   end
 
   create_table "batch_email_jobs", force: :cascade do |t|
