@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171111201806) do
+ActiveRecord::Schema.define(version: 20171111214232) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20171111201806) do
     t.string   "foot_city"
     t.string   "foot_state"
     t.string   "foot_zip"
+    t.string   "email_def_color",       :default=>"#3b99d8"
   end
 
   create_table "email_templates", force: :cascade do |t|
