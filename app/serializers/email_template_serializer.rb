@@ -14,5 +14,6 @@ class EmailTemplateSerializer < ActiveModel::Serializer
              :greet_before_cust_name,
              :greet_after_cust_name,
              :greet_content
+
   has_one :app
 end

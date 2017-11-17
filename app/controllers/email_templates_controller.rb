@@ -62,11 +62,6 @@ class EmailTemplatesController < ApplicationController
           :greet_content,
           :greet_before_cust_name,
           :greet_after_cust_name,
-          :email_def_color,
-          :greet_use_default,
-          :greet_before_cust_name,
-          :greet_after_cust_name,
-          :greet_content
       )
     end
 end
