@@ -58,8 +58,6 @@ class EmailTemplatesController < ApplicationController
           :button_url,
           :color,
           :app_id,
-          :mf_power_foot,
-          :show_address,
           :greet_use_default,
           :greet_content,
           :greet_before_cust_name,

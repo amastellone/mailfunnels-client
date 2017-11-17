@@ -65,8 +65,6 @@ ActiveRecord::Schema.define(version: 20171111214232) do
     t.datetime "updated_at",             :null=>false
     t.string   "color"
     t.integer  "has_checkout_url"
-    t.integer  "mf_power_foot"
-    t.integer  "show_address"
     t.integer  "greet_use_default",      :default=>1
     t.integer  "greet_before_cust_name", :default=>0
     t.integer  "greet_after_cust_name",  :default=>0
