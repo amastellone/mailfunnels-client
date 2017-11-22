@@ -134,7 +134,9 @@
     }
 
     .mf_em_footer_unsub {
-      font-size: 12px;
+      margin-top: 5px !important;
+      margin-bottom: 10px !important;
+      font-size: 12px !important;
     }
 
 
@@ -203,7 +205,7 @@
           <table>
             <tr>
               <td class="content email_footer" align="center">
-                <br/>
+                <p class="mf_em_footer_unsub"><a href="http://mailfunnels-server.herokuapp.com/unsubscribe/<%= @subscriber.id %>">Unsubscribe</a></p>
 
                 <div class="mf_em_footer_address">
                   <% if @email_job.app.foot_use_bill_add === 0 %>
@@ -220,7 +222,6 @@
                     <p class="mf_em_footer_power_by">Powered by MailFunnels</p>
                 <% end %>
 
-                <p class="mf_em_footer_unsub"><a href="http://mailfunnels-server.herokuapp.com/unsubscribe/<%= @subscriber.id %>">Unsubscribe</a></p>
 
               </td>
             </tr>
