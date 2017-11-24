@@ -49,7 +49,8 @@ class AdminController < ApplicationController
         num_funnels: num_funnels,
         num_email_sent: num_email_sent,
         num_email_opened: num_email_opened,
-        num_email_clicked: num_email_clicked
+        num_email_clicked: num_email_clicked,
+        total_revenue: total_revenue,
     }
 
     render json: response
