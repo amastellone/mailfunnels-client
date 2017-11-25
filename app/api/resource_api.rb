@@ -36,6 +36,12 @@ class ResourceApi < Grape::API
       App.update(params)
     end
 
+    # DELETE Route
+    # ------------
+    delete ':id' do
+      App.find(params[:id]).destroy
+    end
+
   end
 
   # Users Resource API
