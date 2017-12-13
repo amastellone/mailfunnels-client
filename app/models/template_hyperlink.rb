@@ -1,0 +1,2 @@
+class TemplateHyperlink < ApplicationRecord
+end

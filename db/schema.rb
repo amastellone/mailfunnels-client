@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171111214232) do
+ActiveRecord::Schema.define(version: 20171213215659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,8 @@ ActiveRecord::Schema.define(version: 20171111214232) do
     t.datetime "updated_at",             :null=>false
     t.string   "color"
     t.integer  "has_checkout_url"
+    t.integer  "mf_power_foot"
+    t.integer  "show_address"
     t.integer  "greet_use_default",      :default=>1
     t.integer  "greet_before_cust_name", :default=>0
     t.integer  "greet_after_cust_name",  :default=>0
@@ -228,6 +230,14 @@ ActiveRecord::Schema.define(version: 20171111214232) do
     t.string   "shopify_token",  :null=>false
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "template_hyperlinks", force: :cascade do |t|
+    t.integer  "app_id",            :foreign_key=>{:references=>"apps", :name=>"fk_template_hyperlinks_app_id", :on_update=>:no_action, :on_delete=>:cascade}, :index=>{:name=>"fk__template_hyperlinks_app_id", :using=>:btree}
+    t.integer  "email_template_id", :foreign_key=>{:references=>"email_templates", :name=>"fk_template_hyperlinks_email_template_id", :on_update=>:no_action, :on_delete=>:cascade}, :index=>{:name=>"fk__template_hyperlinks_email_template_id", :using=>:btree}
+    t.string   "site_url"
+    t.datetime "created_at",        :null=>false
+    t.datetime "updated_at",        :null=>false
   end
 
   create_table "unsubscribers", force: :cascade do |t|

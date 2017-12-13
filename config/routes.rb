@@ -1,5 +1,6 @@
 MailFunnelServer::Application.routes.draw do
 
+  resources :template_hyperlinks
   resources :broadcast_lists
 	mount ResourceApi => '/'
 
