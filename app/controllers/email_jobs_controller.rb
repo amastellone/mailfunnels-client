@@ -33,6 +33,37 @@ class EmailJobsController < ApplicationController
 
   end
 
+  # POSTMARK EMAIL WEBHOOK ROUTE
+  # ----------------------------
+  # Sets EmailJob to clicked when an email is clicked
+  # Request is sent from Postmark as a webhook
+  #
+  # PARAMETERS
+  # ----------
+  # messageID: Postmark message ID of opened email
+  #
+  def email_clicked_hook
+
+    # Get the MessageID from the postmark request
+    message_id = params[:MessageID]
+
+    # Find EmailJob with postmark_id
+    email_job = EmailJob.where(postmark_id: message_id).first
+
+    # If emailJob exists
+    if email_job.nil?
+
+      # Don't do anything no email exists
+    else
+
+      # EmailJob Exists, set opened flag and save EmailJob instance
+      email_job.clicked = 1
+      email_job.save!
+
+    end
+
+  end
+
   # MAILFUNNELS WEBHOOK FUNCTION
   # ----------------------------
   # When a button is clicked on the email sent to customers
@@ -81,7 +112,6 @@ class EmailJobsController < ApplicationController
       end
 
     end
-
 
   end
 

@@ -361,6 +361,48 @@ class ResourceApi < Grape::API
 
   end
 
+  # Email Template Hyperlinks Resource API
+  # --------------------
+  resource :template_hyperlinks do
+    # Get Routes
+    # ----------------
+    get do
+      TemplateHyperlink.where(params)
+    end
+
+
+    # GET funnels/:funnel_id
+    route_param :funnel_id do
+      get do
+        TemplateHyperlink.find(params[:funnel_id])
+      end
+    end
+
+
+    # Post/Put Routes
+    # ----------------
+    post do
+      TemplateHyperlink.create! params
+    end
+
+    put ':id' do
+      TemplateHyperlink.find(params[:id]).update(params)
+    end
+
+    put do
+      TemplateHyperlink.update(params)
+    end
+
+    # DELETE Route
+    # ------------
+    delete ':id' do
+      TemplateHyperlink.find(params[:id]).destroy
+    end
+
+
+  end
+
+
   # CapturedHooks Resource API
   # --------------------------
   resource :captured_hooks do

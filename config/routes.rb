@@ -9,6 +9,7 @@ MailFunnelServer::Application.routes.draw do
 
   # Postmark Webhook Routes
   post '/email_opened' => 'email_jobs#email_opened_hook'
+  post '/email_clicked' => 'email_jobs#email_clicked_hook'
 
   # Email Clicked Hook Route
   get '/email_clicked/:email_job_id', to: 'email_jobs#email_button_clicked'
