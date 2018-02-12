@@ -1,5 +1,6 @@
 MailFunnelServer::Application.routes.draw do
 
+  require 'sidekiq/web'
   resources :template_hyperlinks
   resources :broadcast_lists
 	mount ResourceApi => '/'
@@ -16,5 +17,8 @@ MailFunnelServer::Application.routes.draw do
 
   # Admin Statistics
   post '/admin_dashboard_stats', to: 'admin#admin_dashboard_stats'
+
+
+  mount Sidekiq::Web => '/sidekiq'
 
 end
