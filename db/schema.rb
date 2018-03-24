@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171213215659) do
+ActiveRecord::Schema.define(version: 20180324183951) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,6 +71,8 @@ ActiveRecord::Schema.define(version: 20171213215659) do
     t.integer  "greet_before_cust_name", :default=>0
     t.integer  "greet_after_cust_name",  :default=>0
     t.string   "greet_content"
+    t.text     "html"
+    t.integer  "style_type",             :default=>0
   end
 
   create_table "batch_email_jobs", force: :cascade do |t|
