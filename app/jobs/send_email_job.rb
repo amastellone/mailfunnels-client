@@ -12,66 +12,69 @@ class SendEmailJob < ApplicationJob
       if funnel.nil? == false
         trigger = Trigger.find(funnel.trigger_id)
       end
-      template = EmailTemplate.find(job.email_template_id)
-      subscriber = Subscriber.find(job.subscriber_id)
+      @template = EmailTemplate.find(job.email_template_id)
+      @subscriber = Subscriber.find(job.subscriber_id)
       node = Node.find(job.node_id)
-      app = App.find(job.app_id);
+      @app = App.find(job.app_id);
       if job.sent == 1
         puts "Email Already Sent to Subscriber"
       else
 
-
-        @template = template
         @email_job = job
-        @subscriber = subscriber
         check_out_url = 0
 
         if trigger.hook_id == 3
           puts "hook id = 3"
-          if template.has_checkout_url == 1
+          if @template.has_checkout_url == 1
             puts "template using checkout url"
 
-            if template.has_button
+            if @template.has_button
               puts "template has button"
 
-              if subscriber.abandoned_url != nil
+              if @subscriber.abandoned_url != nil
                 puts "subscriber abandoned url not nil"
-                job.abandoned_url = subscriber.abandoned_url
+                job.abandoned_url = @subscriber.abandoned_url
                 check_out_url = 1
               else
-                template.has_button = 0
+                @template.has_button = 0
               end
             end
           end
         end
 
-        html = File.open("app/views/email/template.html.erb").read
         @renderedhtml = "1"
-        ERB.new(html, 0, "", "@renderedhtml").result(binding)
-        if app.from_name.nil?
-          name = "Shop Admin"
+
+        if @template.style_type == 1
+          html = File.open("app/views/email/styles/mf-minimal_1.html.erb").read
         else
-          name = app.from_name
+          html = File.open("app/views/email/template.html.erb").read
         end
 
-        if app.from_email.nil?
+        ERB.new(html, 0, "", "@renderedhtml").result(binding)
+        if @app.from_name.nil?
+          name = "Shop Admin"
+        else
+          name = @app.from_name
+        end
+
+        if @app.from_email.nil?
           email = "noreply@custprotection.com"
         else
-          email = app.from_email
+          email = @app.from_email
         end
 
         client = Postmark::ApiClient.new('b650bfe2-d2c6-4714-aa2d-e148e1313e37', http_open_timeout: 60)
         response = client.deliver(
-            :subject => template.email_subject,
-            :to => subscriber.email,
+            :subject => @template.email_subject,
+            :to => @subscriber.email,
             :from => name+' '+email,
             :html_body => @renderedhtml,
             :track_opens => 'true')
 
 
         if check_out_url == 1
-          subscriber.abandoned_url = nil
-          subscriber.save!
+          @subscriber.abandoned_url = nil
+          @subscriber.save!
         end
 
         if trigger.nil? == false

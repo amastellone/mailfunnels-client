@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180405005151) do
+ActiveRecord::Schema.define(version: 20180405024415) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -136,7 +136,7 @@ ActiveRecord::Schema.define(version: 20180405005151) do
 
   create_table "captured_hooks", force: :cascade do |t|
     t.integer  "hook_id",       :foreign_key=>{:references=>"hooks", :name=>"fk_captured_hooks_hook_id", :on_update=>:no_action, :on_delete=>:no_action}, :index=>{:name=>"fk__captured_hooks_hook_id", :using=>:btree}
-    t.integer  "subscriber_id", :foreign_key=>{:references=>"subscribers", :name=>"fk_captured_hooks_subscriber_id", :on_update=>:no_action, :on_delete=>:no_action}, :index=>{:name=>"fk__captured_hooks_subscriber_id", :using=>:btree}
+    t.integer  "subscriber_id", :foreign_key=>{:references=>"subscribers", :name=>"fk_captured_hooks_subscriber_id", :on_update=>:no_action, :on_delete=>:cascade}, :index=>{:name=>"fk__captured_hooks_subscriber_id", :using=>:btree}
     t.integer  "app_id",        :foreign_key=>{:references=>"apps", :name=>"fk_captured_hooks_app_id", :on_update=>:no_action, :on_delete=>:no_action}, :index=>{:name=>"fk__captured_hooks_app_id", :using=>:btree}
     t.datetime "created_at",    :null=>false
     t.datetime "updated_at",    :null=>false
