@@ -1,4 +1,5 @@
 require "erb"
+require 'premailer'
 
 class SendEmailJob < ApplicationJob
   @queue = :default
@@ -51,6 +52,14 @@ class SendEmailJob < ApplicationJob
         end
 
         ERB.new(html, 0, "", "@renderedhtml").result(binding)
+
+        if @template.style_type === 1
+          premailer = Premailer.new(@renderedhtml, { :warn_level => Premailer::Warnings::SAFE, :with_html_string => true})
+
+          @renderedhtml = premailer.to_inline_css
+
+        end
+
         if @app.from_name.nil?
           name = "Shop Admin"
         else

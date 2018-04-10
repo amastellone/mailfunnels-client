@@ -9,6 +9,8 @@ gem 'nokogiri', '~> 1.7.2'
 # Job Worker
 gem 'postmark-rails'
 
+gem 'premailer'
+
 # gem 'delayed_job_active_record'
 # gem 'delayed_job_recurring'
 # gem 'whenever', :require => false
