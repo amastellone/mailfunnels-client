@@ -153,86 +153,88 @@
 <div class="row email_content">
 
 
-    <table class="body-wrap">
-      <tr>
-        <td class="container">
-          <table>
-            <tr>
-              <td align="center" style="background: <%= @template.color %>;" class="email_title">
-                <h1><%= @template.email_title %></h1>
-              </td>
-            </tr>
-            <tr>
-              <td class="content" style="text-align: left;">
+  <table class="body-wrap">
+    <tr>
+      <td class="container">
+        <table>
+          <tr>
+            <td align="center" style="background: <%= @template.color %>;" class="email_title">
+              <h1><%= @template.email_title %></h1>
+            </td>
+          </tr>
+          <tr>
+            <td class="content" style="text-align: left;">
 
 
-                <% if @template.greet_use_default === 1 %>
-                    <h2>Hi <%= @subscriber.first_name %>,</h2>
-                <% elsif @template.greet_before_cust_name == 1 %>
-                    <% if @template.greet_content %>
-                        <h2><%= @subscriber.first_name %><%= @template.greet_content %></h2>
-                    <% else %>
-                        <h2><%= @subscriber.first_name %></h2>
-                    <% end %>
-                <% elsif @template.greet_after_cust_name == 1 %>
-                    <% if @template.greet_content %>
-                        <h2><%= @template.greet_content %> <%= @subscriber.first_name %></h2>
-                    <% else %>
-                        <h2><%= @subscriber.first_name %>,</h2>
-                    <% end %>
-                <% end %>
-
-
-                <p> <%= @template.email_content %></p>
-
-                <table>
-                  <tr>
-                    <td align="center">
-                      <% if @template.has_button %>
-                          <p>
-                            <a href="<%= @template.button_url %>" style="background: <%= @template.color %>;" class="button"> <%= @template.button_text %> </a>
-                          </p>
-                      <% end %>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-
-      <tr>
-        <td class="container email_footer">
-          <!--Need to include unsubscribe link-->
-          <table>
-            <tr>
-              <td class="content email_footer" align="center">
-                <p class="mf_em_footer_unsub"><a href="http://mailfunnels-server.herokuapp.com/unsubscribe/<%= @subscriber.id %>">Unsubscribe</a></p>
-
-                <div class="mf_em_footer_address">
-                  <% if @email_job.app.foot_use_bill_add === 0 %>
-                      <p><%= @email_job.app.foot_street %></p>
-                      <p><%= @email_job.app.foot_city %>, <%= @email_job.app.foot_state %> <%= @email_job.app.foot_zip %></p>
+              <% if @template.greet_use_default === 1 %>
+                  <h2>Hi <%= @subscriber.first_name %>,</h2>
+              <% elsif @template.greet_before_cust_name == 1 %>
+                  <% if @template.greet_content %>
+                      <h2><%= @subscriber.first_name %><%= @template.greet_content %></h2>
                   <% else %>
-                      <p><%= @email_job.app.user.street_address %></p>
-                      <p><%= @email_job.app.user.city %>, <%= @email_job.app.user.state %> <%= @email_job.app.user.zip %></p>
+                      <h2><%= @subscriber.first_name %></h2>
                   <% end %>
-                </div>
+              <% elsif @template.greet_after_cust_name == 1 %>
+                  <% if @template.greet_content %>
+                      <h2><%= @template.greet_content %> <%= @subscriber.first_name %></h2>
+                  <% else %>
+                      <h2><%= @subscriber.first_name %>,</h2>
+                  <% end %>
+              <% end %>
 
 
-                <% if @email_job.app.show_mf_powered === 1 %>
-                    <p class="mf_em_footer_power_by">Powered by MailFunnels</p>
+              <p> <%= @template.email_content %></p>
+
+              <table>
+                <tr>
+                  <td align="center">
+                    <% if @template.has_button %>
+                        <% if @template.has_checkout_url === 1 and @email_job.abandoned_url %>
+                            <p><a href="<%= @email_job.abandoned_url %>" style="background: <%= @template.color %>;" class="button"> <%= @template.button_text %> </a></p>
+                        <% else %>
+                            <p><a href="<%= @template.button_url %>" style="background: <%= @template.color %>;" class="button"> <%= @template.button_text %> </a></p>
+                        <% end %>
+                    <% end %>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="container email_footer">
+        <!--Need to include unsubscribe link-->
+        <table>
+          <tr>
+            <td class="content email_footer" align="center">
+              <p class="mf_em_footer_unsub"><a href="http://mailfunnels-server.herokuapp.com/unsubscribe/<%= @subscriber.id %>">Unsubscribe</a></p>
+
+              <div class="mf_em_footer_address">
+                <% if @email_job.app.foot_use_bill_add === 0 %>
+                    <p><%= @email_job.app.foot_street %></p>
+                    <p><%= @email_job.app.foot_city %>, <%= @email_job.app.foot_state %> <%= @email_job.app.foot_zip %></p>
+                <% else %>
+                    <p><%= @email_job.app.user.street_address %></p>
+                    <p><%= @email_job.app.user.city %>, <%= @email_job.app.user.state %> <%= @email_job.app.user.zip %></p>
                 <% end %>
+              </div>
 
 
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
+              <% if @email_job.app.show_mf_powered === 1 %>
+                  <p class="mf_em_footer_power_by">Powered by MailFunnels</p>
+              <% end %>
 
-    </table>
+
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+  </table>
 </div>
 <!-- ~~~~~~~~~~~~~~~~ -->
 <!-- END MESSAGE VIEW -->

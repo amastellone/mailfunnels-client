@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180405024415) do
+ActiveRecord::Schema.define(version: 20180427005432) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 20180405024415) do
     t.text     "html"
     t.integer  "style_type",             :default=>0
     t.integer  "is_archived",            :default=>0
+    t.integer  "has_ac_holder",          :default=>0
   end
 
   create_table "batch_email_jobs", force: :cascade do |t|
