@@ -11,6 +11,9 @@ gem 'postmark-rails'
 
 gem 'premailer'
 
+gem 'RedCloth'
+gem 'liquid'
+
 # gem 'delayed_job_active_record'
 # gem 'delayed_job_recurring'
 # gem 'whenever', :require => false

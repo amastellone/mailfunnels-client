@@ -26,7 +26,7 @@ class SendEmailJob < ApplicationJob
 
         if trigger.hook_id == 3
           puts "hook id = 3"
-          if @template.has_checkout_url == 1
+          if @template.has_checkout_url == 1 or @template.has_ac_holder == 1
             puts "template using checkout url"
 
             if @template.has_button
@@ -47,6 +47,55 @@ class SendEmailJob < ApplicationJob
 
         if @template.style_type == 1
           html = File.open("app/views/email/styles/mf-minimal_1.html.erb").read
+
+          if @template.is_dynamic === 1
+
+            puts "inside dynamic template"
+
+            product = nil
+            # Search For Product Using Shopify API
+            product_found = false
+            puts trigger.product_id
+            if trigger.product_id
+              begin
+                product = ShopifyAPI::Product.find(trigger.product_id)
+                product_found = true
+              rescue => e
+                puts e
+                puts "Error Finding Product"
+                product_found = false
+              end
+            end
+
+            # If product was found, render dynamic product tags
+            if product_found
+              @email_content = RedCloth.new(Liquid::Template.parse(@template.html).render(
+                  'product_title' => product.title,
+                  'product_description' => product.body_html,
+                  'product_image' => product.images[0].src,
+                  'product_price' => product.variants[0].price,
+                  'abandoned_checkout_url' => @subscriber.abandoned_url
+              )).to_html
+            else
+              @email_content = RedCloth.new(Liquid::Template.parse(@template.html).render(
+                  'product_title' => "Product Name",
+                  'product_description' => "Product Description",
+                  'product_image' => 'https://s3-us-west-2.amazonaws.com/mailfunnels-dev/store_placeholder.png',
+                  'product_price' => '0.00',
+                  'abandoned_checkout_url' => @subscriber.abandoned_url
+              )).to_html
+            end
+
+          else
+            @email_content = RedCloth.new(Liquid::Template.parse(@template.html).render(
+                'product_title' => "Product Name",
+                'product_description' => "Product Description",
+                'product_image' => 'https://s3-us-west-2.amazonaws.com/mailfunnels-dev/store_placeholder.png',
+                'product_price' => '0.00',
+                'abandoned_checkout_url' => @subscriber.abandoned_url
+            )).to_html
+          end
+
         else
           html = File.open("app/views/email/template.html.erb").read
         end
@@ -110,7 +159,7 @@ class SendEmailJob < ApplicationJob
                               sent: 0)
 
         if nextNode.delay_unit == 1
-          SendEmailJob.set(wait: node.delay_time.minutes).perform_later(job.id)
+          SendEmailJob.set(wait: node.delay_time.seconds).perform_later(job.id)
         elsif nextNode.delay_unit == 2
           SendEmailJob.set(wait: node.delay_time.hours).perform_later(job.id)
         elsif nextNode.delay_unit == 3
