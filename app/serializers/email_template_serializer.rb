@@ -13,7 +13,8 @@ class EmailTemplateSerializer < ActiveModel::Serializer
              :greet_use_default,
              :greet_before_cust_name,
              :greet_after_cust_name,
-             :greet_content
+             :greet_content,
+             :is_dynamic
 
   has_one :app
 end

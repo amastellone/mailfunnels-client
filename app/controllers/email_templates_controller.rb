@@ -62,6 +62,7 @@ class EmailTemplatesController < ApplicationController
           :greet_content,
           :greet_before_cust_name,
           :greet_after_cust_name,
+          :is_dynamic
       )
     end
 end
