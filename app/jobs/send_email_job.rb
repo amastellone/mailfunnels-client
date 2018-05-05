@@ -52,39 +52,13 @@ class SendEmailJob < ApplicationJob
 
             puts "inside dynamic template"
 
-            product = nil
-            # Search For Product Using Shopify API
-            product_found = false
-            puts trigger.product_id
-            if trigger.product_id
-              begin
-                product = ShopifyAPI::Product.find(trigger.product_id)
-                product_found = true
-              rescue => e
-                puts e
-                puts "Error Finding Product"
-                product_found = false
-              end
-            end
-
-            # If product was found, render dynamic product tags
-            if product_found
-              @email_content = RedCloth.new(Liquid::Template.parse(@template.html).render(
-                  'product_title' => product.title,
-                  'product_description' => product.body_html,
-                  'product_image' => product.images[0].src,
-                  'product_price' => product.variants[0].price,
-                  'abandoned_checkout_url' => @subscriber.abandoned_url
-              )).to_html
-            else
-              @email_content = RedCloth.new(Liquid::Template.parse(@template.html).render(
-                  'product_title' => "Product Name",
-                  'product_description' => "Product Description",
-                  'product_image' => 'https://s3-us-west-2.amazonaws.com/mailfunnels-dev/store_placeholder.png',
-                  'product_price' => '0.00',
-                  'abandoned_checkout_url' => @subscriber.abandoned_url
-              )).to_html
-            end
+            @email_content = RedCloth.new(Liquid::Template.parse(@template.html).render(
+                'product_title' => job.product_title,
+                'product_description' => job.product_description,
+                'product_image' => job.product_image,
+                'product_price' => job.product_price,
+                'abandoned_checkout_url' => @subscriber.abandoned_url
+            )).to_html
 
           else
             @email_content = RedCloth.new(Liquid::Template.parse(@template.html).render(
@@ -156,10 +130,14 @@ class SendEmailJob < ApplicationJob
                               node_id: link.to_node_id,
                               email_template_id: nextNode.email_template_id,
                               email_list_id: job.email_list_id,
-                              sent: 0)
+                              sent: 0,
+                              product_title: job.product_title,
+                              product_description: job.product_description,
+                              product_price: job.product_price,
+                              product_image: job.product_image)
 
         if nextNode.delay_unit == 1
-          SendEmailJob.set(wait: node.delay_time.seconds).perform_later(job.id)
+          SendEmailJob.set(wait: node.delay_time.minutes).perform_later(job.id)
         elsif nextNode.delay_unit == 2
           SendEmailJob.set(wait: node.delay_time.hours).perform_later(job.id)
         elsif nextNode.delay_unit == 3
