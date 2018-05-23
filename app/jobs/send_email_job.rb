@@ -48,17 +48,17 @@ class SendEmailJob < ApplicationJob
         if @template.style_type == 1
           html = File.open("app/views/email/styles/mf-minimal_1.html.erb").read
 
+          subscriber_first_name = ""
+          subscriber_last_name = ""
+
+          if @subscriber
+            subscriber_first_name = @subscriber.first_name
+            subscriber_last_name = @subscriber.last_name
+          end
+
           if @template.is_dynamic === 1
 
             puts "inside dynamic template"
-
-            subscriber_first_name = ""
-            subscriber_last_name = ""
-
-            if @subscriber
-              subscriber_first_name = @subscriber.first_name
-              subscriber_last_name = @subscriber.last_name
-            end
 
             @email_content = RedCloth.new(Liquid::Template.parse(@template.html).render(
                 'first_name'                => subscriber_first_name,
@@ -72,6 +72,8 @@ class SendEmailJob < ApplicationJob
 
           else
             @email_content = RedCloth.new(Liquid::Template.parse(@template.html).render(
+                'first_name'                => subscriber_first_name,
+                'last_name'                 => subscriber_last_name,
                 'product_title' => "Product Name",
                 'product_description' => "Product Description",
                 'product_image' => 'https://s3-us-west-2.amazonaws.com/mailfunnels-dev/store_placeholder.png',
