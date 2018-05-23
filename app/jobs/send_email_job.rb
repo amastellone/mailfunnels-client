@@ -52,12 +52,22 @@ class SendEmailJob < ApplicationJob
 
             puts "inside dynamic template"
 
+            subscriber_first_name = ""
+            subscriber_last_name = ""
+
+            if @subscriber
+              subscriber_first_name = @subscriber.first_name
+              subscriber_last_name = @subscriber.last_name
+            end
+
             @email_content = RedCloth.new(Liquid::Template.parse(@template.html).render(
-                'product_title' => job.product_title,
-                'product_description' => job.product_description,
-                'product_image' => job.product_image,
-                'product_price' => job.product_price,
-                'abandoned_checkout_url' => @subscriber.abandoned_url
+                'first_name'                => subscriber_first_name,
+                'last_name'                 => subscriber_last_name,
+                'product_title'             => job.product_title,
+                'product_description'       => job.product_description,
+                'product_image'             => job.product_image,
+                'product_price'             => job.product_price,
+                'abandoned_checkout_url'    => @subscriber.abandoned_url
             )).to_html
 
           else
